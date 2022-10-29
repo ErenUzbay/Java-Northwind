@@ -1,21 +1,33 @@
 package com.northwind.northwind.api.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.northwind.northwind.business.abstracts.ProductService;
 import com.northwind.northwind.core.utilities.results.DataResult;
+import com.northwind.northwind.core.utilities.results.ErrorDataResult;
 import com.northwind.northwind.core.utilities.results.Result;
 import com.northwind.northwind.entities.concretes.Product;
 import com.northwind.northwind.entities.dtos.ProductWithCategoryDto;
+
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @RestController
 @RequestMapping("/api/products/")
@@ -29,62 +41,62 @@ public class ProductsController {
         this.productService = productService;
     }
 
-    @GetMapping("getall")
-    public DataResult<List<Product>> getAll() {
-        return productService.getAll();
+    @GetMapping("findall")
+    public DataResult<List<Product>> findAll() {
+        return productService.findAll();
     }
 
-    @GetMapping("getProductName")
-    public DataResult<Product> getProductName(@RequestParam String productName) {
+    @GetMapping("findProductName")
+    public DataResult<Product> findProductName(@RequestParam String productName) {
         return productService.findByProductName(productName);
     }
 
-    @GetMapping("getById")
-    public DataResult<Product> getById(@RequestParam Integer productId) {
+    @GetMapping("findById")
+    public DataResult<Product> findById(@RequestParam Integer productId) {
         return productService.findById(productId);
     }
 
-    @GetMapping("getByProductNameAndCategoryId")
-    public DataResult<Product> getByProductNameAndCategoryId(@RequestParam("productName") String productName,
+    @GetMapping("findByProductNameAndCategoryId")
+    public DataResult<Product> findByProductNameAndCategoryId(@RequestParam("productName") String productName,
             @RequestParam("categoryId") int categoryId) {
-        return productService.getByProductNameAndCategoryId(productName, categoryId);
+        return productService.findByProductNameAndCategoryId(productName, categoryId);
     }
 
-    @GetMapping("getByProductNameOrCategoryId")
-    public DataResult<List<Product>> getByProductNameOrCategoryId(@RequestParam String productName,
+    @GetMapping("findByProductNameOrCategoryId")
+    public DataResult<List<Product>> findByProductNameOrCategoryId(@RequestParam String productName,
             @RequestParam int categoryId) {
-        return productService.getByProductNameOrCategoryId(productName, categoryId);
+        return productService.findByProductNameOrCategoryId(productName, categoryId);
     }
 
-    @GetMapping("getByCategoryIdIn")
-    public DataResult<List<Product>> getByCategoryIdIn(@RequestParam List<Integer> categories) {
-        return productService.getByCategoryIdIn(categories);
+    @GetMapping("findByCategoryIdIn")
+    public DataResult<List<Product>> findByCategoryIdIn(@RequestParam List<Integer> categories) {
+        return productService.findByCategoryIdIn(categories);
     }
 
-    @GetMapping("getByProductNameContains")
-    public DataResult<List<Product>> getByProductNameContains(@RequestParam String productName) {
-        return productService.getByProductNameContains(productName);
+    @GetMapping("findByProductNameContains")
+    public DataResult<List<Product>> findByProductNameContains(@RequestParam String productName) {
+        return productService.findByProductNameContains(productName);
     }
 
-    @GetMapping("getByProductNameStartsWith")
-    public DataResult<List<Product>> getByProductNameStartsWith(@RequestParam String productName) {
-        return productService.getByProductNameStartsWith(productName);
+    @GetMapping("findByProductNameStartsWith")
+    public DataResult<List<Product>> findByProductNameStartsWith(@RequestParam String productName) {
+        return productService.findByProductNameStartsWith(productName);
     }
 
-    @GetMapping("getByNameAndCategory")
-    public DataResult<List<Product>> getByNameAndCategory(@RequestParam String productName,
+    @GetMapping("findByNameAndCategory")
+    public DataResult<List<Product>> findByNameAndCategory(@RequestParam String productName,
             @RequestParam int categoryId) {
-        return productService.getByNameAndCategory(productName, categoryId);
+        return productService.findByNameAndCategory(productName, categoryId);
     }
 
-    @GetMapping("getAllByPage")
-    public DataResult<List<Product>> getAll(int pageNo, int pageSize) {
-        return productService.getAll(pageNo, pageSize);
+    @GetMapping("findAllByPage")
+    public DataResult<List<Product>> findAll(int pageNo, int pageSize) {
+        return productService.findAll(pageNo, pageSize);
     }
 
-    @GetMapping("getAllSortedASC")
-    public DataResult<List<Product>> getAllSorted() {
-        return productService.getAllSorted();
+    @GetMapping("findAllSortedASC")
+    public DataResult<List<Product>> findAllSorted() {
+        return productService.findAllSorted();
     }
 
     @GetMapping("findByUnitPriceBetween")
@@ -118,19 +130,31 @@ public class ProductsController {
         return this.productService.countProductWithCategoryName(categoryName);
     }    
 
-    @GetMapping("getProductWithCategoryDetails")
-    public DataResult<List<ProductWithCategoryDto>> getProductWithCategoryDetails() {
-        return this.productService.getProductWithCategoryDetails();
+    @GetMapping("findProductWithCategoryDetails")
+    public DataResult<List<ProductWithCategoryDto>> findProductWithCategoryDetails() {
+        return this.productService.findProductWithCategoryDetails();
     }
     
+    
     @PostMapping("add")
-    public Result Add(@RequestBody Product product) {
-        return productService.add(product);
+    public ResponseEntity<?> Add(@Valid @RequestBody Product product) {
+        return ResponseEntity.ok(productService.add(product));
     }
 
     @PostMapping("delete")
     public Result Delete(@RequestParam Integer productId) {
         return productService.delete(productId);
+    }
+    
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public ErrorDataResult<Object> handleValidationExcepiton(MethodArgumentNotValidException exceptions) {
+        Map<String, String> validationErrors = new HashMap<String, String>();
+        for (FieldError fieldError : exceptions.getBindingResult().getFieldErrors()) {
+            validationErrors.put(fieldError.getField(),fieldError.getDefaultMessage());
+        }
+        ErrorDataResult<Object> errors = new ErrorDataResult<Object>(validationErrors,"Doğrulama Hatası");
+        return errors;
     }
 
 }

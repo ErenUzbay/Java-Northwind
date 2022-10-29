@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +30,8 @@ public class Product {
 //	private int categoryId;
 	
 	@Column(name = "product_name")
+	@NotNull(message = "Product Name can not be null or empty.")
+	@NotEmpty(message = "Product Name can not be null or empty.")
 	private String productName;
 	
 	@Column(name = "unit_price")

@@ -11,20 +11,20 @@ import com.northwind.northwind.entities.dtos.ProductWithCategoryDto;
 public interface ProductService {
     Result add(Product product);
     Result delete(Integer productId);
-    DataResult<List<Product>> getAll();
-    DataResult<List<Product>> getAll(int pageNo, int pageSize); // sayfalama
-    DataResult<List<Product>> getAllSorted(); // sıralama
+    DataResult<List<Product>> findAll();
+    DataResult<List<Product>> findAll(int pageNo, int pageSize); // sayfalama
+    DataResult<List<Product>> findAllSorted(); // sıralama
     DataResult<Product> findById(Integer productId);
     DataResult<Product> findByProductName(String productName);
-    DataResult<Product> getByProductNameAndCategoryId(String productName, int categoryId);
-    DataResult<List<Product>> getByProductNameOrCategoryId(String productName, int categoryId);
-    DataResult<List<Product>> getByCategoryIdIn(List<Integer> categories);
-    DataResult<List<Product>> getByProductNameContains(String productName);
-    DataResult<List<Product>> getByProductNameStartsWith(String productName);
-    DataResult<List<Product>> getByNameAndCategory(String productName, int categoryId);
+    DataResult<Product> findByProductNameAndCategoryId(String productName, int categoryId);
+    DataResult<List<Product>> findByProductNameOrCategoryId(String productName, int categoryId);
+    DataResult<List<Product>> findByCategoryIdIn(List<Integer> categories);
+    DataResult<List<Product>> findByProductNameContains(String productName);
+    DataResult<List<Product>> findByProductNameStartsWith(String productName);
+    DataResult<List<Product>> findByNameAndCategory(String productName, int categoryId);
     DataResult<List<Product>> findByUnitPriceBetween(double lowerLimit, double upperLimit);
     DataResult<List<Product>> findByUnitsInStockLessThanEqual(short unitsInStock);
-    DataResult<List<ProductWithCategoryDto>> getProductWithCategoryDetails();
+    DataResult<List<ProductWithCategoryDto>> findProductWithCategoryDetails();
     long count();    
     long countByProductName(String productName);
     long countByProductWithCategoryName(int categoryId);

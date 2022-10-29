@@ -28,7 +28,7 @@ public class ProductManager implements ProductService {
     }
 
     @Override
-    public DataResult<List<Product>> getAll() {
+    public DataResult<List<Product>> findAll() {
         return new SuccessDataResult<List<Product>>(productDao.findAll(), "Data listelendi");
     }
 
@@ -57,52 +57,52 @@ public class ProductManager implements ProductService {
     }
 
     @Override
-    public DataResult<Product> getByProductNameAndCategoryId(String productName, int categoryId) {
+    public DataResult<Product> findByProductNameAndCategoryId(String productName, int categoryId) {
         return new SuccessDataResult<Product>(
-                this.productDao.getByProductNameAndCategory_CategoryId(productName, categoryId),
+                this.productDao.findByProductNameAndCategory_CategoryId(productName, categoryId),
                 "Data listelendi.");
     }
 
     @Override
-    public DataResult<List<Product>> getByProductNameOrCategoryId(String productName, int categoryId) {
+    public DataResult<List<Product>> findByProductNameOrCategoryId(String productName, int categoryId) {
         return new SuccessDataResult<List<Product>>(
-                this.productDao.getByProductNameOrCategory_CategoryId(productName, categoryId),
+                this.productDao.findByProductNameOrCategory_CategoryId(productName, categoryId),
                 "Data listelendi.");
     }
 
     @Override
-    public DataResult<List<Product>> getByCategoryIdIn(List<Integer> categories) {
-        return new SuccessDataResult<List<Product>>(this.productDao.getByCategory_CategoryIdIn(categories),
+    public DataResult<List<Product>> findByCategoryIdIn(List<Integer> categories) {
+        return new SuccessDataResult<List<Product>>(this.productDao.findByCategory_CategoryIdIn(categories),
                 "Data listelendi.");
     }
 
     @Override
-    public DataResult<List<Product>> getByProductNameContains(String productName) {
-        return new SuccessDataResult<List<Product>>(this.productDao.getByProductNameContains(productName),
+    public DataResult<List<Product>> findByProductNameContains(String productName) {
+        return new SuccessDataResult<List<Product>>(this.productDao.findByProductNameContains(productName),
                 "Data listelendi.");
     }
 
     @Override
-    public DataResult<List<Product>> getByProductNameStartsWith(String productName) {
-        return new SuccessDataResult<List<Product>>(this.productDao.getByProductNameStartsWith(productName),
+    public DataResult<List<Product>> findByProductNameStartsWith(String productName) {
+        return new SuccessDataResult<List<Product>>(this.productDao.findByProductNameStartsWith(productName),
                 "Data listelendi.");
     }
 
     @Override
-    public DataResult<List<Product>> getByNameAndCategory(String productName, int categoryId) {
-        return new SuccessDataResult<List<Product>>(this.productDao.getByNameAndCategory(productName, categoryId),
+    public DataResult<List<Product>> findByNameAndCategory(String productName, int categoryId) {
+        return new SuccessDataResult<List<Product>>(this.productDao.findByNameAndCategory(productName, categoryId),
                 "Data listelendi.");
     }
 
     @Override
-    public DataResult<List<Product>> getAll(int pageNo, int pageSize) {
+    public DataResult<List<Product>> findAll(int pageNo, int pageSize) {
         PageRequest pageable = PageRequest.of(pageNo - 1, pageSize);
         List<Product> products = this.productDao.findAll(pageable).getContent();
         return new SuccessDataResult<List<Product>>(products, "Data listelendi.");
     }
 
     @Override
-    public DataResult<List<Product>> getAllSorted() {
+    public DataResult<List<Product>> findAllSorted() {
         Sort sort = Sort.by(Sort.Direction.ASC, "productName");
         List<Product> products = this.productDao.findAll(sort);
         return new SuccessDataResult<List<Product>>(products, "Data listelendi.");
@@ -141,8 +141,8 @@ public class ProductManager implements ProductService {
     }
 
     @Override
-    public DataResult<List<ProductWithCategoryDto>> getProductWithCategoryDetails() {
-        return new SuccessDataResult<List<ProductWithCategoryDto>>(this.productDao.getProductWithCategoryDetails(),
+    public DataResult<List<ProductWithCategoryDto>> findProductWithCategoryDetails() {
+        return new SuccessDataResult<List<ProductWithCategoryDto>>(this.productDao.findProductWithCategoryDetails(),
                 "Data listelendi.");
     }
 }

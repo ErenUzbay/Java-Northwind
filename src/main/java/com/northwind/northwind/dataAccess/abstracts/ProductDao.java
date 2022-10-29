@@ -13,21 +13,21 @@ import com.northwind.northwind.entities.dtos.ProductWithCategoryDto;
 public interface ProductDao extends JpaRepository<Product, Integer> {
     Product findByProductName(String productName);
 
-    Product getByProductNameAndCategory_CategoryId(String productName, int categoryId);
+    Product findByProductNameAndCategory_CategoryId(String productName, int categoryId);
 
-    List<Product> getByProductNameOrCategory_CategoryId(String productName, int categoryId);
+    List<Product> findByProductNameOrCategory_CategoryId(String productName, int categoryId);
 
     // select * ... where category in(1,2,3,4)
-    List<Product> getByCategory_CategoryIdIn(List<Integer> categories);
+    List<Product> findByCategory_CategoryIdIn(List<Integer> categories);
 
-    List<Product> getByProductNameContains(String productName);
+    List<Product> findByProductNameContains(String productName);
 
-    List<Product> getByProductNameStartsWith(String productName);
+    List<Product> findByProductNameStartsWith(String productName);
 
     // JPQL
     // Product => Entitiy olan.(productName,categoryId)=> Entity property
     @Query("From Product where productName=:productName and category.categoryId=:categoryId")
-    List<Product> getByNameAndCategory(String productName, int categoryId);
+    List<Product> findByNameAndCategory(String productName, int categoryId);
     // => Yukarıdaki sorgu
     // Select * From Products where product_name=x and categoryId=y
 
@@ -47,5 +47,5 @@ public interface ProductDao extends JpaRepository<Product, Integer> {
     @Query("Select new com.northwind.northwind.entities.dtos.ProductWithCategoryDto"
             + "(p.id,p.productName,c.categoryName) "
             + "From Category c Inner Join c.products p")
-    List<ProductWithCategoryDto> getProductWithCategoryDetails();
+    List<ProductWithCategoryDto> findProductWithCategoryDetails();
 }

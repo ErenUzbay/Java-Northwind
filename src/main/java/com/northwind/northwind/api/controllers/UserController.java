@@ -45,6 +45,7 @@ public class UserController {
     public DataResult<User> findByEmail(@RequestParam String email) {
        return this.userService.findByEmail(email);
     }
+   
     // Global Exception - Validasyon hataları => Sistemde şu türden hata olursa ResponseEntity.BadRequest çevir
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
